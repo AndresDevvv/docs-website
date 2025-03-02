@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Image as ImageIcon, MessageSquare, Send, Sparkles, Lock, Unlock, Search, RefreshCw, X } from 'lucide-react'
-import { stringify } from 'querystring' 
+import { stringify } from 'querystring'
 
 const defaultApiBase = 'https://api.zukijourney.com/v1'
 const defaultImageModel = 'flux-schnell'
@@ -63,7 +63,7 @@ export default function Component() {
   const removeAttachedImage = (index: number) => {
     setAttachedImages(prev => prev.filter((_, i) => i !== index))
   }
-  
+
   // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -90,7 +90,7 @@ export default function Component() {
 
   const normalizeModelData = (models: any[]): Model[] => {
     return models.map(model => {
-      const idKeywords = ['gpt', 'claude', 'mistral', 'gemini', 'deepseek', 'llama','gemma','mixtral','yi-','ERNIE', 'command-r'];
+      const idKeywords = ['gpt', 'claude', 'mistral', 'gemini', 'deepseek', 'llama', 'gemma', 'mixtral', 'yi-', 'ERNIE', 'command-r', 'stral', 'o1','o3','grok','sonar','r1','qwen','expe','reka','thug','toppy','mytho','airo','tulu','olmo','amazon','gigac','aion','zuki','cara','phi','beta','chat','preview','-7','-8','-1','-2','auto'];
       let modelType = 'image';
       let isFree = true;
 
@@ -201,15 +201,15 @@ export default function Component() {
 
       const formattedMessage = endpoint === 'chat' && attachedImages.length > 0
         ? {
-            role: 'user',
-            content: [
-              { type: 'text', text: messageToSend.content as string },
-              ...attachedImages.map(img => ({
-                type: 'image_url',
-                image_url: img
-              }))
-            ]
-          }
+          role: 'user',
+          content: [
+            { type: 'text', text: messageToSend.content as string },
+            ...attachedImages.map(img => ({
+              type: 'image_url',
+              image_url: img
+            }))
+          ]
+        }
         : messageToSend
 
       const response = await fetch(url, {
@@ -221,20 +221,20 @@ export default function Component() {
         body: JSON.stringify(
           endpoint === 'chat'
             ? {
-                model: model,
-                messages: [...messages, formattedMessage],
-              }
+              model: model,
+              messages: [...messages, formattedMessage],
+            }
             : {
-                model: model,
-                prompt: messageToSend.content,
-                n: 1,
-                size: '1024x1024',
-              }
+              model: model,
+              prompt: messageToSend.content,
+              n: 1,
+              size: '1024x1024',
+            }
         )
       })
 
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error?.message || stringify(data))
       }
@@ -269,7 +269,7 @@ export default function Component() {
     setLoading(true)
     setError('')
     const newMessage: Message = { role: 'user', content: prompt }
-    
+
     setMessages(prev => [...prev, newMessage])
 
     const success = await sendRequest(newMessage)
@@ -287,7 +287,7 @@ export default function Component() {
     setLoading(true)
     setError('')
     const messageToRetry = messages[index - 1]
-    
+
     setMessages(prev => prev.slice(0, index))
 
     const success = await sendRequest(messageToRetry)
@@ -301,7 +301,7 @@ export default function Component() {
     if (message.type === 'image') {
       return <img src={message.content as string} alt="Generated image" className="max-w-full h-auto rounded" />
     }
-    
+
     if (message.type === 'markdown' && typeof message.content === 'string') {
       return (
         <ReactMarkdown
@@ -376,21 +376,21 @@ export default function Component() {
                 {error}
               </div>
             )}
-            <Tabs 
-              value={endpoint} 
-              onValueChange={(value: string) => setEndpoint(value as 'chat' | 'image')} 
+            <Tabs
+              value={endpoint}
+              onValueChange={(value: string) => setEndpoint(value as 'chat' | 'image')}
               className="bg-white/5 rounded-xl p-1 backdrop-blur-sm"
             >
               <TabsList className="grid grid-cols-2 gap-4 bg-transparent">
-                <TabsTrigger 
-                  value="chat" 
+                <TabsTrigger
+                  value="chat"
                   className="data-[state=active]:bg-white/20 data-[state=active]:backdrop-blur-md data-[state=active]:text-white text-white/70"
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Chat
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="image" 
+                <TabsTrigger
+                  value="image"
                   className="data-[state=active]:bg-white/20 data-[state=active]:backdrop-blur-md data-[state=active]:text-white text-white/70"
                 >
                   <ImageIcon className="mr-2 h-4 w-4" />
@@ -452,8 +452,8 @@ export default function Component() {
                 </div>
               </TabsContent>
             </Tabs>
-            <ScrollArea 
-              className="h-[400px] rounded-xl p-4 bg-white/5 backdrop-blur-sm border border-white/10" 
+            <ScrollArea
+              className="h-[400px] rounded-xl p-4 bg-white/5 backdrop-blur-sm border border-white/10"
               ref={scrollAreaRef}
             >
               <AnimatePresence initial={false}>
@@ -466,13 +466,12 @@ export default function Component() {
                     transition={{ duration: 0.3 }}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
                   >
-                    <div className={`max-w-[80%] p-4 rounded-2xl ${
-                      message.role === 'user'
-                        ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg'
-                        : message.role === 'error'
+                    <div className={`max-w-[80%] p-4 rounded-2xl ${message.role === 'user'
+                      ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg'
+                      : message.role === 'error'
                         ? 'bg-gradient-to-br from-red-600 to-red-700 text-white cursor-pointer shadow-lg'
                         : 'bg-white/20 backdrop-blur-md text-white shadow-lg'
-                    }`} onClick={() => message.role === 'error' && handleRetry(index)}>
+                      }`} onClick={() => message.role === 'error' && handleRetry(index)}>
                       {renderMessage(message)}
                       {attachedImages.length > 0 && message.role === 'user' && (
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -527,7 +526,6 @@ export default function Component() {
                 ))}
               </div>
             )}
-            
             <div className="flex w-full items-center gap-2">
               <Textarea
                 value={prompt}
@@ -563,11 +561,10 @@ export default function Component() {
               <Button
                 type="submit"
                 disabled={loading || models.length === 0}
-                className={`h-12 w-12 ${
-                  endpoint === 'chat'
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600'
-                    : 'bg-gradient-to-r from-pink-600 to-red-600'
-                } text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center`}
+                className={`h-12 w-12 ${endpoint === 'chat'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600'
+                  : 'bg-gradient-to-r from-pink-600 to-red-600'
+                  } text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center`}
               >
                 {loading ? (
                   <motion.div
